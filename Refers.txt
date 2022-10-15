@@ -1,5 +1,5 @@
 1) https://habr.com/ru/post/193888/
 2) https://habr.com/ru/post/196432/
-3)https://habr.com/ru/post/204112/
-
-4 https://www.youtube.com/watch?v=Y259p-fOQiU&t=799s (Python + Pygame. Сезон 2. Урок 3. Анимация. Pyganim.)
+3) https://habr.com/ru/post/204112/
+4) https://www.screencapture.com/ru/
+5) https://www.youtube.com/watch?v=Y259p-fOQiU&t=799s (Python + Pygame. Сезон 2. Урок 3. Анимация. Pyganim.)

@@ -10,9 +10,10 @@ class World(object):
         self.surface = surface
         self.camera = camera
         self.player = player
+        self.entity_player = pygame.sprite.Group()
+        self.entity_player.add(self.player)
         self.entities = pygame.sprite.Group()  # Все объекты
         self.platforms = []  # то, во что мы будем врезаться или опираться
-        self.entities.add(self.player)
 
     def load_world(self):
 
@@ -23,7 +24,9 @@ class World(object):
                     pf = Platform(x, y)
                     self.entities.add(pf)
                     self.platforms.append(pf)
-
+                elif col == "*":
+                    pf = Platform(x, y, 2)
+                    self.entities.add(pf)
                 x += PLATFORM_WIDTH
             y += PLATFORM_HEIGHT
             x = 0
@@ -32,3 +35,6 @@ class World(object):
         self.camera.update(self.player) # центризируем камеру относительно персонажа
         for e in self.entities:
             self.surface.blit(e.image, self.camera.apply(e))
+        for e in self.entity_player:
+            self.surface.blit(e.image, self.camera.apply(e))
+

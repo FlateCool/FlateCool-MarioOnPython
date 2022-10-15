@@ -11,8 +11,8 @@ PLATFORM_COLOR = "#FF6262"
 
 # player settings
 MOVE_SPEED = 7
-WIDTH = 32
-HEIGHT = 32
+MARIO_WIDTH = 22
+MARIO_HEIGHT = 34
 SPRITE_COLOR = "#888888"
 JUMP_POWER = 10
 GRAVITY = 0.35 # Сила, которая будет тянуть нас вниз
@@ -20,3 +20,4 @@ GRAVITY = 0.35 # Сила, которая будет тянуть нас вни�
 # colors
 BLACK = (0, 0, 0)
 GREEN = (0, 214, 120)
+WHITE = (255, 255, 255)
