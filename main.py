@@ -2,16 +2,20 @@ import pygame
 from settings import *
 from world import *
 from player import *
+from camera import *
 
 pygame.init()
 screen = pygame.display.set_mode(DISPLAY)
 pygame.display.set_caption("Super Mario Boy")
 bg = pygame.Surface((WIN_WIDTH, WIN_HEIGHT))
 bg.fill(BACKGROUND_COLOR)
+
 hero = Player(55, 55, screen)
-world = World(screen, level, hero)
+camera = Camera()
+world = World(screen, camera, level, hero)
 world.load_world()
 timer = pygame.time.Clock()
+
 
 
 def main():
@@ -29,6 +33,8 @@ def main():
 
     pygame.quit()
     exit()
+
+
 
 
 if __name__ == "__main__":

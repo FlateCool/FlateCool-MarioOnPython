@@ -1,4 +1,5 @@
 import pygame
+import pyganim
 from settings import *
 
 
@@ -35,6 +36,8 @@ class Player(pygame.sprite.Sprite):
         self.ANIMATION_JUMP_RIGHT = [('mario/jr.png', 0.1)]
         self.ANIMATION_JUMP = [('mario/j.png', 0.1)]
         self.ANIMATION_STAY = [('mario/0.png', 0.1)]
+
+
 
     def update(self, left, right, up, platforms):
         if left:
