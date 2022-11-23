@@ -10,7 +10,7 @@ pygame.display.set_caption("Super Mario Boy")
 bg = pygame.Surface((WIN_WIDTH, WIN_HEIGHT))
 bg.fill(BACKGROUND_COLOR)
 
-hero = Player(55, 55, screen)
+hero = Player(70, 55, screen)
 camera = Camera()
 world = World(screen, camera, level, hero)
 world.load_world()

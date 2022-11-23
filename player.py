@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.xvel = 0  # скорость перемещения. 0 - стоять на месте
         self.yvel = 0  # скорость вертикального перемещения
-        self.onGround = False  # На земле ли я?
+        self.onGround = True  # На земле ли я?
         self.startX = x  # Начальная позиция Х, пригодится когда будем переигрывать уровень
         self.startY = y
         self.image = pygame.Surface((MARIO_WIDTH, MARIO_HEIGHT))
