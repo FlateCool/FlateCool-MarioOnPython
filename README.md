@@ -3,7 +3,7 @@
 # MarioOnPython
 <img src="https://drive.google.com/uc?id=12Mu-TJ2JPKRQrizD7yxV7S_-pXlDwEtx">
 <br /> 
-Попытка написать свою версию популярной игры Mario
+Попытка написать свою версию популярной некогда игры Mario
 
 </div>
 
