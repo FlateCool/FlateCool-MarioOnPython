@@ -1,7 +1,7 @@
 <div align="center">
 
 # MarioOnPython
-<img src="github.com/FlateCool/MarioOnPython/blob/main/mario/pic.png">
+<img src="https://drive.google.com/uc?id=12Mu-TJ2JPKRQrizD7yxV7S_-pXlDwEtx">
 
 Попытка написать свою версию популярной игры Mario
 
