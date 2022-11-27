@@ -1,13 +1,17 @@
 import pygame
 from settings import *
-from level import *
+from loader import *
 
 
 class Camera(object):
-    total_level_width = len(level[0]) * PLATFORM_WIDTH  # Высчитываем фактическую ширину уровня
-    total_level_height = len(level) * PLATFORM_HEIGHT  # высоту
 
-    def __init__(self):
+    def __init__(self, loader):
+        self.bootloader = loader
+        # ширина уровня
+        self.total_level_width = self.bootloader.get_level_size()[0] * PLATFORM_WIDTH
+
+        # высота уровня
+        self.total_level_height = self.bootloader.get_level_size()[1] * PLATFORM_HEIGHT
         self.camera_func = Camera.camera_configure
         self.state = pygame.Rect(0, 0, self.total_level_width, self.total_level_height)
 

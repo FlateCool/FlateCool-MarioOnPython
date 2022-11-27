@@ -21,3 +21,7 @@ GRAVITY = 0.35 # Сила, которая будет тянуть нас вни�
 BLACK = (0, 0, 0)
 GREEN = (0, 214, 120)
 WHITE = (255, 255, 255)
+
+# tmx settings
+LBackground = 0
+LPlatforms = 1

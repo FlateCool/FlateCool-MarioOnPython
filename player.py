@@ -4,12 +4,13 @@ from settings import *
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, surface):
+    def __init__(self, surface, loader):
         pygame.sprite.Sprite.__init__(self)
+        x, y = loader.get_player_coordinates()
         self.xvel = 0  # скорость перемещения. 0 - стоять на месте
         self.yvel = 0  # скорость вертикального перемещения
         self.onGround = True  # На земле ли я?
-        self.startX = x  # Начальная позиция Х, пригодится когда будем переигрывать уровень
+        self.startX = x
         self.startY = y
         self.image = pygame.Surface((MARIO_WIDTH, MARIO_HEIGHT))
         self.image.fill(GREEN)
@@ -110,7 +111,6 @@ class Player(pygame.sprite.Sprite):
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
             if pygame.sprite.collide_rect(self, p):  # если есть пересечение платформы с игроком
-
                 if xvel > 0:  # если движется вправо
                     self.rect.right = p.rect.left  # то не движется вправо
 
