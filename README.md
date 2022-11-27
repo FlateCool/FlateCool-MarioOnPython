@@ -9,14 +9,9 @@
 </div>
 
 
-
-
-Documentation
+Документация
 ===============================================================================
-
-
-# Оглавление
-1. [Installation](#installation)
+1. [Установка](#installation)
 2. [Basic Use](#basic-use)
 3. [Getting Properties](#object-properties)
 4. [Working with Maps](#working-with-maps)
@@ -27,56 +22,22 @@ Documentation
 9. [Working with Objects](#working-with-objects)
 10. [Understanding Properties](#understanding-properties)
 
-
-Design Goals and Features
+Установка
 ===============================================================================
+Для запуска игры нужны библиотеки: pygame, pytmx, pyganim. Для их установки в терминале введите команды:
 
-* API with many handy functions
-* Memory efficient and performant
-* Loads data, "properties" metadata, and images from Tiled's TMX format
-* Supports base64, csv, gzip, zlib and uncompressed XML formats
-* Properties for all native Tiled object types
-* Point data for polygon and polyline objects
-* Automatic flipping and rotation of tiles
-* Tile collider groups
-* Built-in image loading with pygame, pysdl2, and pyglet
-* Loads animation information
-
-
-Why use pytmx?
-===============================================================================
-
-### pytmx is efficient:
-* Map information is stored as integers, not python objects (32+kb)
-* Extensive use of generators and iterators make it easy on memory
-* Code is designed for compact size and readability
-
-### pytmx is flexible:
-* Supports all major Tiled features and object types
-* pytmx data classes can be extended
-* Does not force you to render data in any particular way
-* Includes many checks to give useful debugging information
-* Supports pygame, pyglet, and pysdl2 image loading
-
-### pytmx is supported:
-* GitHub hosting allows for community participation
-* I have kept pytmx current with new versions of Tiled since v.7
-
-
-Installation
-===============================================================================
-
-Install from pip
-
+    pip pip install pygame
+    
+    pip install pyganim
+    
     pip install pytmx
+    
 
 
-Manually install it
-
-    python setup.py install
 
 
-You can also copy/paste the pytmx folder into your project
+
+
 
 
 Basic use:
