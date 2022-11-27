@@ -1,6 +1,7 @@
 <div align="center">
 
 # MarioOnPython
+<img src="https://www.mapeditor.org/img/tiled-logo-header.png">
 
 Попытка написать свою версию популярной игры Mario
 
