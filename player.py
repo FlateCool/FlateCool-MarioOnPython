@@ -16,6 +16,8 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(GREEN)
         self.rect = pygame.Rect(x, y, MARIO_WIDTH, MARIO_HEIGHT)  # прямоугольный объект
         self.surface = surface
+        self.money = 0
+        self.lives = 10
 
         # animation initialization
         self.ANIMATION_DELAY = 100  # скорость смены кадров
@@ -110,7 +112,13 @@ class Player(pygame.sprite.Sprite):
 
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
+
             if pygame.sprite.collide_rect(self, p):  # если есть пересечение платформы с игроком
+                if p.type == 'coin':
+                    self.money += p.cost
+                    p.cost = 0
+                    p.deleted = True
+
                 if xvel > 0:  # если движется вправо
                     self.rect.right = p.rect.left  # то не движется вправо
 

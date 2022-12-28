@@ -17,6 +17,7 @@ world = World(screen, camera, bootloader)
 world.load_world()
 timer = pygame.time.Clock()
 
+STATES = {'DEAD' : 1, 'ALIVE' : 2, 'NEXT_LEVEL': 3}
 
 def main():
     isRunning = True
@@ -27,8 +28,6 @@ def main():
                 isRunning = False
 
         world.render()
-        world.player.movement(world.platforms)
-
         pygame.display.update()
         timer.tick(60)
 

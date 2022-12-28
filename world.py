@@ -4,6 +4,7 @@ from blocks import *
 from pytmx.util_pygame import load_pygame
 from loader import *
 from player import *
+from effects import *
 
 
 class World(object):
@@ -15,8 +16,25 @@ class World(object):
         self.entity_player = pygame.sprite.Group()
         self.entity_player.add(self.player)
         self.entities = pygame.sprite.Group()  # Все объекты
-        self.platforms = []  # то, во что мы будем врезаться или опираться
+        self.platforms = pygame.sprite.Group()  # то, во что мы будем врезаться или опираться
+        self.handler_funcs = []
+        self.animates_funcs = []
+        self.font = pygame.font.Font('freesansbold.ttf', 16)
+        
 
+        self.heart_image = pygame.image.load('mario/heart.png')
+        self.coin_image = pygame.image.load('mario/coin.png')
+        #self.effect = TeleportationEffect(self.player.rect.x, self.player.rect.y, self.surface)
+        #self.effects = pygame.sprite.Group(self.effect)
+
+
+    def draw_statistics(self):
+        self.surface.blit(self.heart_image, (WIN_WIDTH - 170, 10))
+        player_lives = self.font.render('x {}'.format(self.player.lives), True, BLACK)
+        self.surface.blit(player_lives, (WIN_WIDTH - 130, 15))
+        self.surface.blit(self.coin_image, (WIN_WIDTH - 80, 10))
+        self.coin_statistics = self.font.render('x {}'.format(self.player.money), True, BLACK)
+        self.surface.blit(self.coin_statistics, (WIN_WIDTH - 40, 15))
 
     def load_world(self):
         for tile in self.bootloader.get_Background().tiles():
@@ -32,13 +50,74 @@ class World(object):
             pf = Platform(x * PLATFORM_WIDTH, y * PLATFORM_HEIGHT, im)
 
             self.entities.add(pf)
-            self.platforms.append(pf)
+            self.platforms.add(pf)
 
+        for teleport in self.bootloader.get_Teleports():
+            ob = self.bootloader.gameMap.get_object_by_id(teleport.id)
+            x = ob.x
+            y = ob.y
+            print(x, y)
+            goX = teleport.properties['goX']
+            goY = teleport.properties['goY']
+
+            pf = Teleport(x, y, goX, goY)
+            self.entities.add(pf)
+            self.handler_funcs.append(pf.handler)
+            self.animates_funcs.append(pf.animate)
+
+            #self.handler_funcs.append(self.effect.handler)
+            #self.animates_funcs.append(self.effect.animate)
+
+        for coin in self.bootloader.get_Coins():
+            ob = self.bootloader.gameMap.get_object_by_id(coin.id)
+            x = ob.x
+            y = ob.y
+            print(x, y)
+            #goX = coin.properties['goX']
+            #goY = teleport.properties['goY']
+
+            pf = Coin(x, y, 'coin')
+            self.entities.add(pf)
+            self.platforms.add(pf)
+
+
+            #self.handler_funcs.append(self.effect.handler)
+            #self.animates_funcs.append(self.effect.animate)
 
 
     def render(self):
         self.camera.update(self.player)  # центризируем камеру относительно персонажа
         for e in self.entities:
+
+            if isinstance(e, Coin) and e.deleted:
+                self.player.money += e.cost
+                self.entities.remove(e)
+                self.platforms.remove(e)
+
+
             self.surface.blit(e.image, self.camera.apply(e))
+
         for e in self.entity_player:
             self.surface.blit(e.image,  self.camera.apply(e))
+
+        self.player.movement(self.platforms)
+        self.process_handlers()
+        self.process_animate()
+        self.draw_statistics()
+
+
+
+
+
+    def process_handlers(self):
+        for h in self.handler_funcs:
+            h(self.player)
+
+    def process_animate(self):
+        for h in self.animates_funcs:
+            h()
+
+
+
+
+

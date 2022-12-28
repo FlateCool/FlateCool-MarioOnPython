@@ -16,6 +16,14 @@ class Loader(object):
         Platforms = self.Layers[1]
         return Platforms
 
+    def get_Teleports(self):
+        Teleports = self.gameMap.get_layer_by_name("Teleports")
+        return Teleports
+
+    def get_Coins(self):
+        Coins = self.gameMap.get_layer_by_name("Coins")
+        return Coins
+
     def get_tile_image(self, x, y, layer):
         im = self.gameMap.get_tile_image(x, y, layer)
         return im
