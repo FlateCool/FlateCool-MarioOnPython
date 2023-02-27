@@ -8,11 +8,12 @@ from effects import *
 
 
 class World(object):
-    def __init__(self, surface, camera, bootloader):
+    def __init__(self, surface, camera, bootloader, game):
         self.surface = surface
         self.camera = camera
         self.bootloader = bootloader
-        self.player = Player(self.surface, self.bootloader)
+        self.game = game
+        self.player = Player(self.game, self.surface, self.bootloader)
         self.entity_player = pygame.sprite.Group()
         self.entity_player.add(self.player)
         self.entities = pygame.sprite.Group()  # Все объекты
@@ -56,7 +57,7 @@ class World(object):
             ob = self.bootloader.gameMap.get_object_by_id(teleport.id)
             x = ob.x
             y = ob.y
-            print(x, y)
+            
             goX = teleport.properties['goX']
             goY = teleport.properties['goY']
 
@@ -67,12 +68,36 @@ class World(object):
 
             #self.handler_funcs.append(self.effect.handler)
             #self.animates_funcs.append(self.effect.animate)
+            
+            
+        for die_block in self.bootloader.get_Die_Blocks():
+            ob = self.bootloader.gameMap.get_object_by_id(die_block.id)
+            x = ob.x
+            y = ob.y           
+            pf = Die_Block(x, y)
+            self.entities.add(pf)
+            #self.platforms.add(pf)
+            self.handler_funcs.append(pf.handler)
+            self.animates_funcs.append(pf.animate)
+            
+        for die_fire in self.bootloader.get_Die_Fires():
+            ob = self.bootloader.gameMap.get_object_by_id(die_fire.id)
+            x = ob.x
+            y = ob.y 
+            direction_x = int(ob.direction_x)         
+                    
+            pf = Die_Fire(x, y, direction_x)
+            self.entities.add(pf)
+            #self.platforms.add(pf)
+            self.handler_funcs.append(pf.handler)
+            self.animates_funcs.append(pf.animate)
+            
 
         for coin in self.bootloader.get_Coins():
             ob = self.bootloader.gameMap.get_object_by_id(coin.id)
             x = ob.x
             y = ob.y
-            print(x, y)
+            
             #goX = coin.properties['goX']
             #goY = teleport.properties['goY']
 
@@ -93,6 +118,7 @@ class World(object):
                 self.player.money += e.cost
                 self.entities.remove(e)
                 self.platforms.remove(e)
+                self.player.sound_coin.play()
 
 
             self.surface.blit(e.image, self.camera.apply(e))

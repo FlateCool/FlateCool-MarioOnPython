@@ -3,10 +3,14 @@ import pyganim
 from settings import *
 
 
+# pygame.time.get_ticks() - таймер
+
 class Player(pygame.sprite.Sprite):
-    def __init__(self, surface, loader):
+    def __init__(self, game, surface, loader):
         pygame.sprite.Sprite.__init__(self)
         x, y = loader.get_player_coordinates()
+        self.loader = loader
+        self.game = game
         self.xvel = 0  # скорость перемещения. 0 - стоять на месте
         self.yvel = 0  # скорость вертикального перемещения
         self.onGround = True  # На земле ли я?
@@ -17,7 +21,29 @@ class Player(pygame.sprite.Sprite):
         self.rect = pygame.Rect(x, y, MARIO_WIDTH, MARIO_HEIGHT)  # прямоугольный объект
         self.surface = surface
         self.money = 0
-        self.lives = 10
+        self.max_lives = 3
+        self.lives = self.max_lives
+        
+        # Подгружаем звуковые ресурсы
+        self.sound_jump = pygame.mixer.Sound('Sounds/jump.mp3')
+        self.sound_hurt = pygame.mixer.Sound('Sounds/sound_hurt.mp3')
+        self.sound_coin = pygame.mixer.Sound('Sounds/coin.mp3')
+        # Блокировщик звука прыжка
+        self.sound_jump_blocker = False
+        
+        
+        ''' Heroe's states: {Alive|Hurt|DEAD}
+            Transitions:
+            Alive <-> Hurt
+            Dead <- Hurt
+            Alive <-> Dead        
+        '''
+        # Начальное состояние 
+        self.state = 'Alive'
+        # Таймер для отсчета пребывания в состоянии 'Hurt'
+        self.hurt_timer = 0
+        # Время бессмертия (мс)
+        self.time_for_immortary = 1000
 
         # animation initialization
         self.ANIMATION_DELAY = 100  # скорость смены кадров
@@ -69,46 +95,77 @@ class Player(pygame.sprite.Sprite):
 
 
 
+    def toggle_state(self, to_state):
+        if self.state == 'Alive' and to_state == 'Hurt':
+            self.hurt_timer = pygame.time.get_ticks()
+            self.lives -= 1
+            self.state = 'Hurt'
+            self.sound_hurt.play()
+        elif self.state == 'Hurt' and to_state == 'Hurt':
+            if pygame.time.get_ticks() - self.hurt_timer > self.time_for_immortary:
+                self.state = 'Alive'
+        
+
+
     def update(self, left, right, up, platforms):
-        if up:
-            if self.onGround:  # прыгаем, только когда можем оттолкнуться от земли
-                self.yvel = -JUMP_POWER
-            self.image.fill(WHITE)
-            self.boltAnimJump.blit(self.image, (0, 0))
-
-        if left:
-            self.xvel = -MOVE_SPEED  # Лево = x- n
-            self.image.fill(WHITE)
-            if up:  # для прыжка влево есть отдельная анимация
-                self.boltAnimJumpLeft.blit(self.image, (0, 0))
-            else:
-                self.boltAnimLeft.blit(self.image, (0, 0))
-
-        if right:
-            self.xvel = MOVE_SPEED  # Право = x + n
-            self.image.fill(WHITE)
+        if self.state == 'DEAD':
+            self.rect.x = self.startX
+            self.rect.y = self.startY
+            self.lives = self.max_lives
+            self.state = 'Alive'
+        elif self.state == 'Hurt':
+            if self.lives <= 0:
+                self.state = 'DEAD' 
+                
+        
+                
+        if self.state == 'Alive' or self.state == 'Hurt':   
+        
             if up:
-                self.boltAnimJumpRight.blit(self.image, (0, 0))
-            else:
-                self.boltAnimRight.blit(self.image, (0, 0))
-
-
-        if not (left or right):  # стоим, когда нет указаний идти
-            self.xvel = 0
-            if not up:
+                if self.onGround:  # прыгаем, только когда можем оттолкнуться от земли
+                    self.yvel = -JUMP_POWER
                 self.image.fill(WHITE)
-                self.boltAnimStay.blit(self.image, (0, 0))
+                self.boltAnimJump.blit(self.image, (0, 0))
+                if not self.sound_jump_blocker:
+                    self.sound_jump.play()
+                    self.sound_jump_blocker = True
 
-        if not self.onGround:
-            self.yvel += GRAVITY
+            if left:
+                self.xvel = -MOVE_SPEED  # Лево = x- n
+                self.image.fill(WHITE)
+                if up:  # для прыжка влево есть отдельная анимация
+                    self.boltAnimJumpLeft.blit(self.image, (0, 0))
+                else:
+                    self.boltAnimLeft.blit(self.image, (0, 0))
 
-        self.onGround = False  # Мы не знаем, когда мы на земле((
+            if right:
+                self.xvel = MOVE_SPEED  # Право = x + n
+                self.image.fill(WHITE)
+                if up:
+                    self.boltAnimJumpRight.blit(self.image, (0, 0))
+                else:
+                    self.boltAnimRight.blit(self.image, (0, 0))
 
-        self.rect.y += self.yvel
-        self.collide(0, self.yvel, platforms)
 
-        self.rect.x += self.xvel  # переносим свои положение на xvel
-        self.collide(self.xvel, 0, platforms)
+            if not (left or right):  # стоим, когда нет указаний идти
+                self.xvel = 0
+                if not up:
+                    self.image.fill(WHITE)
+                    self.boltAnimStay.blit(self.image, (0, 0))
+
+            if not self.onGround:
+                self.yvel += GRAVITY              
+                if self.rect.y > self.loader.get_level_size()[1] * PLATFORM_HEIGHT:
+                    self.state = 'DEAD'
+                    self.sound_hurt.play()
+
+            self.onGround = False  # Мы не знаем, когда мы на земле((
+
+            self.rect.y += self.yvel
+            self.collide(0, self.yvel, platforms)
+
+            self.rect.x += self.xvel  # переносим свои положение на xvel
+            self.collide(self.xvel, 0, platforms)
 
     def collide(self, xvel, yvel, platforms):
         for p in platforms:
@@ -129,6 +186,7 @@ class Player(pygame.sprite.Sprite):
                     self.rect.bottom = p.rect.top  # то не падает вниз
                     self.onGround = True  # и становится на что-то твердое
                     self.yvel = 0  # и энергия падения пропадает
+                    self.sound_jump_blocker = False
 
                 if yvel < 0:  # если движется вверх
                     self.rect.top = p.rect.bottom  # то не движется вверх
@@ -148,5 +206,8 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_RIGHT]:
             right = True
+            
+        if keys[pygame.K_ESCAPE]:
+            self.game.toggle()
 
         self.update(left, right, up, platforms)  # передвижение

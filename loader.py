@@ -23,6 +23,19 @@ class Loader(object):
     def get_Coins(self):
         Coins = self.gameMap.get_layer_by_name("Coins")
         return Coins
+    
+    def get_Die_Blocks(self):
+        Die_Blocks = self.gameMap.get_layer_by_name("Die_Blocks")        
+        return Die_Blocks   
+    
+    def get_Die_Fires(self):
+        """Функция загружает смертельные огоньки
+           из файла ресурсов
+        Returns:
+            pytmx.pytmx.TiledObjectGroup: список объектов
+        """
+        Die_Fires = self.gameMap.get_layer_by_name("Die_Fires")
+        return Die_Fires 
 
     def get_tile_image(self, x, y, layer):
         im = self.gameMap.get_tile_image(x, y, layer)
